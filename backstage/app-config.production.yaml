@@ -1,17 +1,13 @@
 app:
-  # Should be the same as backend.baseUrl when using the `app-backend` plugin.
-  baseUrl: http://localhost:7007
+  baseUrl: https://backstage.test.com
+  listen:
+    host: 0.0.0.0
 
 backend:
-  # Note that the baseUrl should be the URL that the browser and other clients
-  # should use when communicating with the backend, i.e. it needs to be
-  # reachable not just from within the backend host, but from all of your
-  # callers. When its value is "http://localhost:7007", it's strictly private
-  # and can't be reached by others.
-  baseUrl: http://localhost:7007
-  # The listener can also be expressed as a single <host>:<port> string. In this case we bind to
-  # all interfaces, the most permissive setting. The right value depends on your specific deployment.
-  listen: ':7007'
+  baseUrl: https://backstage.test.com
+  listen:
+    host: 0.0.0.0
+    port: 7007
 
   # config options: https://node-postgres.com/apis/client
   database:
@@ -29,8 +25,18 @@ backend:
       #     $file: <file-path>/ca/server.crt
 
 auth:
+  environment: development
   providers:
-    guest: {}
+    microsoft:
+      development:
+        clientId: ${AZURE_CLIENT_ID}
+        clientSecret: ${AZURE_CLIENT_SECRET}
+        tenantId: ${AZURE_TENANT_ID}
+        domainHint: ${AZURE_TENANT_ID}
+        signIn:
+          resolvers:
+            # See https://backstage.io/docs/auth/microsoft/provider#resolvers for more resolvers
+            - resolver: userIdMatchingUserEntityAnnotation
 
 catalog:
   # Overrides the default list locations from app-config.yaml as these contain example data.
